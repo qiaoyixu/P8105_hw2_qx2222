@@ -125,7 +125,10 @@ total_weight_prof = filter (trash_wheel_tidy, from_sheet == 'Professor')
 mr_2020 = filter(trash_wheel_tidy, from_sheet == 'mr', year == 2020)
 ```
 
-In the resulting dataset, there are 524 observations and 15 variables, such as `r names(trash_wheel_tidy)`.
+descriptive paragraph:
+
+
+In the combined dataset(trash_wheel_tidy), there are 524 observations and 15 variables. Key variables include `r names(trash_wheel_tidy)`.
 The total weight of trash collected by Professor Trash Wheel is `r sum(total_weight_prof$weight_tons)` tons.
 The total number of sports balls collected by Mr. Trash Wheel in 2020 is `r sum(mr_2020$sports_balls)` balls.
 
