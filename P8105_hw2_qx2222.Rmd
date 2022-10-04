@@ -82,21 +82,53 @@ trans_ent %>%
 
 
 ### Problem 2
-we import and clean data from `Trash-Wheel-Collection-Totals-7-2020-2.xlsx`. The process begins with data import,
+we import and clean data from `Trash-Wheel-Collection-Totals-7-2020-2.xlsx`： 
 
-```{r}
-trash_wheel = 
+```{r, warning=FALSE}
+mr_trash_wheel = 
   read_excel( 
     "data/Trash-Wheel-Collection-Totals-7-2020-2.xlsx",
-    sheet = "Mr. Trash Wheel", range = "A2:N534") %>% # omit non-data entries
+    sheet = "Mr. Trash Wheel", range = "A2:N535") %>% # omit non-data entries
   janitor::clean_names() %>%
+  mutate (dumpster = as.numeric(dumpster)) %>%
   drop_na(dumpster)%>% #omit rows that do not include dumpster-specific data
-  mutate (sports_balls = round(sports_balls), sports_balls = as.integer(sports_balls)) #round and convert to integer variable
+  mutate (sports_balls = round(sports_balls), sports_balls = as.integer(sports_balls), from_sheet = "mr") #round and convert to integer variable
 
-trash_wheel
+
+
+mr_trash_wheel
     
 ```
 
+
+Use a similar process to import, clean, and organize the data for Professor Trash Wheel：
+```{r}
+prof_trash_wheel = 
+  read_excel( 
+    "data/Trash-Wheel-Collection-Totals-7-2020-2.xlsx",
+    sheet = "Professor Trash Wheel", range = "A2:N117") %>% # omit non-data entries
+  janitor::clean_names() %>%
+  drop_na(dumpster)%>% #omit rows that do not include dumpster-specific data
+  mutate (sports_balls = as.integer(sports_balls), from_sheet = "professor") #round and convert to integer variable
+
+prof_trash_wheel
+```
+
+```{r}
+trash_wheel_tidy = bind_rows(mr_trash_wheel, prof_trash_wheel)#combine two datasets by dumpster
+trash_wheel_tidy
+```
+
+
+```{r}
+#filter combined dataset to answer questions in descriptive part
+total_weight_prof = filter (trash_wheel_tidy, from_sheet == 'professor')
+mr_2020 = filter(trash_wheel_tidy, from_sheet == 'mr', year == 2020)
+```
+
+In the resulting dataset, there are 524 observations and 15 varibales, such as `r names(trash_wheel_tidy)`.
+The total weight of trash collected by Professor Trash Wheel is `r sum(total_weight_prof$weight_tons)` tons.
+The total number of sports balls collected by Mr. Trash Wheel in 2020 is `r sum(mr_2020$sports_balls)` balls.
 
 
 
